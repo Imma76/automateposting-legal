@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AutomatePosting — Schedule & Publish TikTok Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0d0d0d;
+    --white: #f5f3ee;
+    --purple: #6C63FF;
+    --purple-dim: #3d3799;
+    --gray: #1e1e1e;
+    --gray2: #2a2a2a;
+    --muted: #888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-icon {
+    width: 32px; height: 32px;
+    background: var(--black);
+    border: 1px solid var(--gray2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-icon svg { width: 16px; height: 16px; }
+
+  .nav-wordmark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--white);
+  }
+
+  .nav-wordmark span { color: var(--purple); }
+
+  nav a.nav-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  nav a.nav-link:hover { color: var(--white); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 7rem 2rem 4rem;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    color: var(--purple);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 100px;
+    padding: 5px 14px;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--purple);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--purple);
+  }
+
+  .hero-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 13px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--purple);
+    color: #fff;
+  }
+  .btn-primary:hover { background: #7d75ff; transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
+
+  /* ── FEATURES ── */
+  .section {
+    position: relative;
+    z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 6rem 2rem;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--purple);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    margin-bottom: 3.5rem;
+    line-height: 1.1;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .feature {
+    background: var(--black);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .feature:hover { background: #111; }
+
+  .feature-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+  }
+
+  .feature-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.5px;
+  }
+
+  .feature-body {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: background 0.2s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: #111; }
+
+  .step-index {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    min-width: 32px;
+    padding-top: 3px;
+    letter-spacing: 1px;
+  }
+
+  .step-content h3 {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    margin-bottom: 0.4rem;
+  }
+
+  .step-content p {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-icon">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="16" height="16" rx="3" fill="#1a1a1a"/>
+        <polygon points="4,3 4,13 13,8" fill="#6C63FF"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Automate<span>Posting</span></span>
+  </a>
+  <a href="#how" class="nav-link">How it works</a>
+</nav>
+
+<section class="hero">
+  <div class="badge">Personal automation tool</div>
+  <h1>Post TikTok<br/>content on<br/><em>autopilot.</em></h1>
+  <p class="hero-sub">
+    A personal developer tool to schedule and publish TikTok videos directly from your machine — no manual steps.
+  </p>
+  <div class="cta-row">
+    <a href="https://github.com/imma76/automateposting-legal" class="btn btn-primary">View on GitHub</a>
+    <a href="#how" class="btn btn-ghost">How it works</a>
+  </div>
+</section>
+
+<section class="section">
+  <p class="section-label">Features</p>
+  <h2 class="section-title">Everything you need<br/>to automate your flow.</h2>
+  <div class="features-grid">
+    <div class="feature">
+      <p class="feature-num">01</p>
+      <h3 class="feature-title">Direct posting</h3>
+      <p class="feature-body">Videos publish straight to your TikTok profile via the official Content Posting API. No phone tap required.</p>
+    </div>
+    <div class="feature">
+      <p class="feature-num">02</p>
+      <h3 class="feature-title">Caption & hashtags</h3>
+      <p class="feature-body">Set your caption, hashtags, and privacy settings programmatically — all from a simple config file.</p>
+    </div>
+    <div class="feature">
+      <p class="feature-num">03</p>
+      <h3 class="feature-title">Scheduled publishing</h3>
+      <p class="feature-body">Queue up a week of content and let a cron job handle the rest. Batch record on Sunday, post all week.</p>
+    </div>
+    <div class="feature">
+      <p class="feature-num">04</p>
+      <h3 class="feature-title">Personal use only</h3>
+      <p class="feature-body">Built for one creator, one account. No multi-user infrastructure. Simple, private, and secure.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <p class="section-label">Workflow</p>
+  <h2 class="section-title">How it works.</h2>
+  <div class="steps">
+    <div class="step">
+      <span class="step-index">01</span>
+      <div class="step-content">
+        <h3>Authenticate once</h3>
+        <p>Connect your TikTok account via OAuth. Your access token is stored locally — never sent anywhere except TikTok's API.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-index">02</span>
+      <div class="step-content">
+        <h3>Drop your video file</h3>
+        <p>Place your mp4 in the queue folder with a matching caption file. That's your entire publishing setup.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-index">03</span>
+      <div class="step-content">
+        <h3>Run the script</h3>
+        <p>A Python script picks up the file, calls the TikTok Direct Post API, and publishes it live to your profile.</p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-index">04</span>
+      <div class="step-content">
+        <h3>Schedule with cron</h3>
+        <p>Point a cron job at the script and it runs automatically at whatever time you choose. Full autopilot.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="footer-copy">© 2026 AutomatePosting — personal developer tool</p>
+  <div class="footer-links">
+    <a href="./terms">Terms of Service</a>
+    <a href="./privacy">Privacy Policy</a>
+    <a href="https://github.com/imma76/automateposting-legal">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
