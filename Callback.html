@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Authenticating — AutomatePosting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --black: #0d0d0d; --white: #f5f3ee; --purple: #6C63FF; --muted: #888; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+  .card {
+    position: relative;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 3rem;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+  }
+  .status-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--purple);
+    margin: 0 auto 1.5rem;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    line-height: 1.8;
+  }
+  .code-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    text-align: left;
+  }
+  .code-box {
+    background: #0d0d0d;
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--white);
+    word-break: break-all;
+    text-align: left;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .copy-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--purple);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 2rem;
+  }
+  .copy-btn:hover { background: #7d75ff; }
+  .copy-btn.copied { background: #1D9E75; }
+  .instructions {
+    background: #0d0d0d;
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: left;
+  }
+  .instructions p {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+  }
+  .instructions p:last-child { margin-bottom: 0; }
+  .instructions span { color: var(--white); }
+  .error-card h1 { color: #E24B4A; }
+  .error-msg {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #E24B4A;
+    background: rgba(226,75,74,0.08);
+    border: 1px solid rgba(226,75,74,0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div class="status-dot" id="dot"></div>
+  <h1 id="title">Authenticating...</h1>
+  <p class="subtitle" id="subtitle">Extracting your authorisation code.<br/>One moment.</p>
+  <div id="content"></div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const code   = params.get('code');
+  const error  = params.get('error');
+  const card   = document.getElementById('card');
+  const dot    = document.getElementById('dot');
+  const title  = document.getElementById('title');
+  const sub    = document.getElementById('subtitle');
+  const content = document.getElementById('content');
+
+  if (error) {
+    card.classList.add('error-card');
+    dot.style.background = '#E24B4A';
+    dot.style.animation  = 'none';
+    title.textContent    = 'Auth failed';
+    sub.textContent      = 'TikTok returned an error.';
+    content.innerHTML    = `<div class="error-msg">${error}</div>`;
+  } else if (code) {
+    dot.style.background  = '#1D9E75';
+    dot.style.animation   = 'none';
+    title.textContent     = 'Authenticated!';
+    sub.innerHTML         = 'Copy the code below and paste it<br/>into your terminal when prompted.';
+
+    content.innerHTML = `
+      <p class="code-label">Your authorisation code</p>
+      <div class="code-box" id="codeBox">${code}</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copy code</button>
+      <div class="instructions">
+        <p>1. Go back to your terminal</p>
+        <p>2. Paste the code when asked: <span>Enter auth code:</span></p>
+        <p>3. Press Enter — the script will finish automatically</p>
+      </div>
+    `;
+  } else {
+    title.textContent = 'No code found';
+    sub.textContent   = 'Try running the script again.';
+  }
+
+  function copyCode() {
+    const code = document.getElementById('codeBox').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent  = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy code';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
