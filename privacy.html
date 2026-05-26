@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Privacy Policy — AutomatePosting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #0d0d0d;
+    --white: #f5f3ee;
+    --purple: #6C63FF;
+    --gray2: #2a2a2a;
+    --muted: #888;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 2.5rem;
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .nav-icon {
+    width: 32px; height: 32px;
+    background: var(--black);
+    border: 1px solid var(--gray2);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-icon svg { width: 16px; height: 16px; }
+  .nav-wordmark {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: var(--white);
+  }
+  .nav-wordmark span { color: var(--purple); }
+  nav a.nav-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  nav a.nav-link:hover { color: var(--white); }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 9rem 2rem 6rem;
+  }
+  .page-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--purple);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 0.75rem;
+  }
+  .updated {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4rem;
+    letter-spacing: 0.3px;
+  }
+  .doc-section {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem 0;
+  }
+  .doc-section:last-of-type {
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--purple);
+    letter-spacing: 1px;
+    margin-bottom: 0.6rem;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 1rem;
+  }
+  p {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.9;
+  }
+  p + p { margin-top: 0.75rem; }
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .footer-links { display: flex; gap: 2rem; }
+  .footer-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--white); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="./index.html" class="nav-logo">
+    <div class="nav-icon">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="16" height="16" rx="3" fill="#1a1a1a"/>
+        <polygon points="4,3 4,13 13,8" fill="#6C63FF"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Automate<span>Posting</span></span>
+  </a>
+  <a href="./index.html" class="nav-link">← Back home</a>
+</nav>
+
+<div class="page">
+  <p class="page-label">Legal</p>
+  <h1>Privacy<br/>Policy</h1>
+  <p class="updated">Last updated: May 26, 2026</p>
+
+  <div class="doc-section">
+    <p class="section-num">01</p>
+    <h2>Overview</h2>
+    <p>This Privacy Policy describes how AutomatePosting ("the App") handles information. This App is a personal tool used exclusively by its developer to automate posting of video content to a single TikTok account. It is not a public-facing product and has no end-users other than the developer.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">02</p>
+    <h2>Information we collect</h2>
+    <p>The App does not collect personal information from any third parties. The only data processed by the App is:</p>
+    <p>— Video files and captions created by the developer, used solely for the purpose of posting to TikTok.</p>
+    <p>— OAuth access tokens provided by TikTok's authentication system, used to authorise API calls on behalf of the developer's own TikTok account.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">03</p>
+    <h2>How we use information</h2>
+    <p>Data processed by the App is used solely to post content to the developer's TikTok profile using TikTok's Content Posting API. No data is sold, shared, or disclosed to any third party.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">04</p>
+    <h2>Data storage</h2>
+    <p>OAuth tokens are stored locally on the developer's own machine and are not transmitted to any external server other than TikTok's official API endpoints. Video files remain on the developer's local storage at all times.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">05</p>
+    <h2>Third-party services</h2>
+    <p>This App integrates exclusively with TikTok's API. All interactions with TikTok are governed by TikTok's own Privacy Policy and Terms of Service, available at tiktok.com/legal/privacy-policy.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">06</p>
+    <h2>No data sharing</h2>
+    <p>The App does not share any data with advertisers, analytics platforms, or any other third parties. No user profiles are built and no tracking occurs.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">07</p>
+    <h2>Children's privacy</h2>
+    <p>This App is not directed at children under the age of 13. No data from minors is collected or processed.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">08</p>
+    <h2>Changes to this policy</h2>
+    <p>This Privacy Policy may be updated periodically. The "last updated" date at the top of this document reflects the most recent revision.</p>
+  </div>
+
+  <div class="doc-section">
+    <p class="section-num">09</p>
+    <h2>Contact</h2>
+    <p>For any questions about this Privacy Policy, please contact the App developer directly via GitHub.</p>
+  </div>
+</div>
+
+<footer>
+  <p class="footer-copy">© 2026 AutomatePosting — personal developer tool</p>
+  <div class="footer-links">
+    <a href="./terms.html">Terms of Service</a>
+    <a href="./privacy.html">Privacy Policy</a>
+    <a href="https://github.com/imma76/automateposting-legal">GitHub</a>
+  </div>
+</footer>
+
+</body>
+</html>
